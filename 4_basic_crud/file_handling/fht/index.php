@@ -30,7 +30,8 @@
 
     ?>
     <li>
-        <a href="store/<?php echo $l ?>" target="_blank"><?php echo $l ?></a>
+
+        <a href="del.php?name=<?php echo $l ?>">Delete</a> | <a href="store/<?php echo $l ?>" target="_blank"><?php echo $l ?></a>
     </li>
     <?php
 

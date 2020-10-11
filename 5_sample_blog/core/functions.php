@@ -7,10 +7,11 @@
     }
 
     function runQuery($sql){
-        if(mysqli_query(con(),$sql)){
+        $con = con();
+        if(mysqli_query($con,$sql)){
             return true;
         }else{
-            die("Query Fail : ".mysqli_error());
+            die("Query Fail : ".mysqli_error($con));
         }
     }
 
@@ -57,6 +58,7 @@
         $text = stripcslashes($text);
         return $text;
     }
+
 
 
 
@@ -128,6 +130,11 @@ function login(){
         return fetch($sql);
     }
 
+    function users(){
+        $sql = "SELECT * FROM users";
+        return fetchAll($sql);
+    }
+
 // user end
 
 // category start
@@ -151,7 +158,7 @@ function login(){
     }
 
     function categories(){
-        $sql = "SELECT * FROM categories";
+        $sql = "SELECT * FROM categories ORDER  BY ordering DESC";
         return fetchAll($sql);
     }
 
@@ -165,6 +172,19 @@ function login(){
         $title = $_POST['title'];
         $id = $_POST['id'];
         $sql = "UPDATE categories SET title='$title' WHERE id=$id";
+        return runQuery($sql);
+    }
+
+    function categoryPinToTop($id){
+        $sql = "UPDATE categories SET ordering='0'";//all to 0
+        mysqli_query(con(),$sql);
+
+        $sql = "UPDATE categories SET ordering='1' WHERE id=$id";// id to 1
+        return runQuery($sql);
+    }
+
+    function categoryRemovePin(){
+        $sql = "UPDATE categories SET ordering='0'";//all to 0
         return runQuery($sql);
     }
 
@@ -182,7 +202,7 @@ function login(){
         $sql = "INSERT INTO posts (title,description,category_id,user_id) VALUES ('$title','$description','$category_id','$user_id')";
 
         if(runQuery($sql)){
-            linkTo("post_add.php");
+//            linkTo("post_add.php");
         }
 
     }
@@ -193,7 +213,12 @@ function login(){
     }
 
     function posts(){
-        $sql = "SELECT * FROM posts";
+        if($_SESSION['user']['role'] == 2){
+            $current_user_id = $_SESSION['user']['id'];
+            $sql = "SELECT * FROM posts WHERE user_id = '$current_user_id'";// for user
+        }else{
+            $sql = "SELECT * FROM posts";
+        }
         return fetchAll($sql);
     }
 
@@ -218,3 +243,56 @@ function login(){
 
 
 // post end
+
+// front panel start
+
+    function fPosts($orderCol="id",$orderType="DESC"){
+
+        $sql = "SELECT * FROM posts ORDER BY $orderCol $orderType";
+        return fetchAll($sql);
+    }
+
+    function fCategories(){
+
+        $sql = "SELECT * FROM categories ORDER BY ordering DESC";
+
+        return fetchAll($sql);
+    }
+
+    function fPostByCat($category_id,$limit="99999",$post_id = 0){
+
+        $sql = "SELECT * FROM posts WHERE category_id = $category_id AND id != $post_id ORDER BY id DESC LIMIT $limit";
+
+        return fetchAll($sql);
+    }
+
+    function fSearch($searchKey){
+        $sql = "SELECT * FROM posts WHERE title LIKE '%$searchKey%' OR description LIKE '%$searchKey%' ORDER BY id DESC";
+
+        return fetchAll($sql);
+    }
+
+    function fSearchByDate($start,$end){
+        $sql = "SELECT * FROM posts WHERE created_at BETWEEN '$start' AND '$end' ORDER BY id DESC";
+
+        return fetchAll($sql);
+    }
+
+// front panel end
+
+// viewer count start
+    function viewerRecord($userId,$postId,$device){
+        $sql = "INSERT INTO viewers (user_id,post_id,device) VALUES ('$userId','$postId','$device')";
+        runQuery($sql);
+    }
+
+    function viewerCountByPost($postId){
+        $sql = "SELECT * FROM viewers WHERE post_id = $postId";
+        return fetchAll($sql);
+
+    }
+    function viewerCountByUser($userId){
+        $sql = "SELECT * FROM viewers WHERE user_id = $userId";
+        return fetchAll($sql);
+    }
+// viewer count end

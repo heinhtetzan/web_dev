@@ -141,7 +141,19 @@
     vertical-align: middle !important;
 }
 
+.front-panel-right-sidebar{
+    position: sticky;
+    top: 15px;
+}
 
+.post{
+    transition: 0.5s;
+}
+
+.post:hover{
+    transform: translateY(-5px);
+    box-shadow: 0 0.325rem 0.75rem rgba(0, 0, 0, 0.075) !important;
+}
 
 
 @media screen and (max-width: 780px){

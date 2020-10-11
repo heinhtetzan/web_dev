@@ -20,6 +20,14 @@
                     </span>
                 </a>
             </li>
+            <li class="menu-item">
+                <a href="<?php echo $url; ?>/index.php" class="menu-item-link ">
+                    <span>
+                        <i class="feather-arrow-right-circle"></i>
+                        Go to news
+                    </span>
+                </a>
+            </li>
             <li class="menu-spacer"></li>
 
 
@@ -50,6 +58,9 @@
             <li class="menu-spacer"></li>
 
 
+            <?php if($_SESSION['user']['role'] <= 1){ ?>
+
+
 
             <li class="menu-title">
                 <span>Setting</span>
@@ -66,8 +77,23 @@
                 </a>
             </li>
 
+            <?php if($_SESSION['user']['role'] == 0){ ?>
+                <li class="menu-item">
+                    <a href="<?php echo $url; ?>/user_list.php" class="menu-item-link">
+                        <span>
+                            <i class="feather-users"></i>
+                            User Manager
+                        </span>
+                        <span class="badge badge-pill bg-white shadow-sm text-primary p-1">
+                            <?php echo countTotal('users'); ?>
+                        </span>
+                    </a>
+                </li>
+            <?php } ?>
+
             <li class="menu-spacer"></li>
 
+            <?php } ?>
 
             <li class="menu-item">
                 <a href="<?php echo $url; ?>/logout.php" class="btn btn-secondary w-100">

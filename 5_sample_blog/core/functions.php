@@ -42,8 +42,8 @@
         return date($format,strtotime($timestamp));
     }
 
-    function countTotal($table){
-        $sql = "SELECT COUNT(id) FROM $table WHERE 1";
+    function countTotal($table,$condition = 1){
+        $sql = "SELECT COUNT(id) FROM $table WHERE $condition";
         $total = fetch($sql);
         return $total['COUNT(id)'];
     }
@@ -58,9 +58,6 @@
         $text = stripcslashes($text);
         return $text;
     }
-
-
-
 
 // common end
 
@@ -212,18 +209,18 @@ function login(){
         return fetch($sql);
     }
 
-    function posts(){
+    function posts($limit=9999999){
         if($_SESSION['user']['role'] == 2){
             $current_user_id = $_SESSION['user']['id'];
-            $sql = "SELECT * FROM posts WHERE user_id = '$current_user_id'";// for user
+            $sql = "SELECT * FROM posts WHERE user_id = '$current_user_id' LIMIT $limit";// for user
         }else{
-            $sql = "SELECT * FROM posts";
+            $sql = "SELECT * FROM posts LIMIT $limit";
         }
         return fetchAll($sql);
     }
 
     function postDelete($id){
-        $sql="DELETE FROM posts WHERE id = $id";
+        $sql="DELETE FROM posts WHERE id = $id ";
         return runQuery($sql);
 
     }
@@ -296,3 +293,76 @@ function login(){
         return fetchAll($sql);
     }
 // viewer count end
+
+// ads start
+
+    function ads(){
+        $today = date("Y-m-d");
+        $sql = "SELECT * FROM ads WHERE start <= '$today' AND end > '$today'";
+//        die($sql);
+        return fetchAll($sql);
+    }
+
+// ads end
+// payment start
+
+    function payNow(){
+        $from = $_SESSION['user']['id'];
+        $to = $_POST['to_user'];
+        $amount = $_POST['amount'];
+        $description = $_POST['description'];
+
+        // from user money update (-)
+        $fromUserDetail = user($from);
+        $leftMoney = $fromUserDetail['money'] - $amount;
+        if($fromUserDetail['money'] >= $amount){
+            
+            $sql = "UPDATE users SET money=$leftMoney WHERE id = $from";
+            mysqli_query(con(),$sql);
+
+            // to user money update (+)
+            $toUserDetail = user($to);
+            $newAmount = $toUserDetail['money'] + $amount;
+            $sql = "UPDATE users SET money=$newAmount WHERE id = $to";
+            mysqli_query(con(),$sql);
+
+
+            // add to transition table
+            $sql = "INSERT INTO transition (from_user,to_user,amount,description) VALUES ('$from','$to','$amount','$description')";
+            runQuery($sql);
+        }
+
+
+    }
+
+    function transition($id){
+        $sql = "SELECT * FROM transition WHERE id = $id";
+        return fetch($sql);
+    }
+
+    function transitions(){
+        $userId = $_SESSION['user']['id'];
+        if($_SESSION['user']['role'] == 0){
+            $sql = "SELECT * FROM transition";
+        }else{
+            $sql = "SELECT * FROM transition WHERE from_user = $userId OR to_user = $userId";
+        }
+        return fetchAll($sql);
+    }
+
+// payment end
+
+// dashboard start
+
+function dashboardPosts($limit=9999999){
+    if($_SESSION['user']['role'] == 2){
+        $current_user_id = $_SESSION['user']['id'];
+        $sql = "SELECT * FROM posts WHERE user_id = '$current_user_id' ORDER BY id DESC LIMIT $limit";// for user
+    }else{
+        $sql = "SELECT * FROM posts ORDER BY id DESC LIMIT $limit";
+    }
+    return fetchAll($sql);
+}
+
+
+// dashboard end

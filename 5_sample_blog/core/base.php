@@ -14,3 +14,5 @@ $role = ["Admin","Editor","User"];
 
 
 $url = "http://{$_SERVER['HTTP_HOST']}/my_class/web_dev_7/5_sample_blog";
+
+date_default_timezone_set('Asia/Yangon');

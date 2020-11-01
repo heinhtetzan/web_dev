@@ -138,7 +138,7 @@ function login(){
 
     function categoryAdd(){
 
-        $title = $_POST['title'];
+        $title = textFilter(strip_tags($_POST['title']));
         $user_id = $_SESSION['user']['id'];
 
         $sql = "INSERT INTO categories (title,user_id) VALUES ('$title','$user_id')";
@@ -185,6 +185,14 @@ function login(){
         return runQuery($sql);
     }
 
+    function isCategory($id){
+        if(category($id)){
+            return $id;
+        }else{
+            die("category is invalid");
+        }
+    }
+
 // category end
 
 // post start
@@ -193,7 +201,7 @@ function login(){
 
         $title = textFilter($_POST['title']);
         $description = textFilter($_POST['description']);
-        $category_id = $_POST['category_id'];
+        $category_id = isCategory($_POST['category_id']);
         $user_id = $_SESSION['user']['id'];
 
         $sql = "INSERT INTO posts (title,description,category_id,user_id) VALUES ('$title','$description','$category_id','$user_id')";

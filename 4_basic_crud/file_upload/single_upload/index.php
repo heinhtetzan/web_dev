@@ -22,7 +22,7 @@
     <label for="">Single Upload</label>
     <br>
     <br>
-    <input type="file" name="upload">
+    <input type="file" name="upload" >
     <button>upload</button>
 </form>
 <h4>Uploaded Photo</h4>

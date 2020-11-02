@@ -133,8 +133,32 @@ function register(){
 
     }
 
+    $supportFileType = ['image/jpeg','image/png'];
+
+    if(isset($_FILES['upload']['name'])){
+        $tempFile = $_FILES['upload']['tmp_name'];
+        $fileName = $_FILES['upload']['name'];
+        if(in_array($_FILES['upload']['type'],$supportFileType)){
+            $saveFolder = "store/";
+//            if(move_uploaded_file($tempFile,$saveFolder.uniqid()."_".$fileName)){
+//                header("location:index.php");
+//            }
+        }else{
+            setError("upload","File Incorrect");
+            $errorStatus=1;
+        }
+
+    }else{
+        setError("upload","File is required");
+        $errorStatus=1;
+    }
+
 
     if(!$errorStatus){
+
         print_r($_POST);
+         print_r($_FILES);
+
+
     }
 }

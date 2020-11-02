@@ -39,7 +39,7 @@
                                 }
                             ?>
 
-                            <form action="" method="post">
+                            <form action="" method="post" enctype="multipart/form-data">
                                 <div class="form-group">
                                     <label for="name" class="text-primary font-weight-bold">Your Name</label>
                                     <input type="text" id="name" name="name" class="form-control" value="<?php echo old('name'); ?>">
@@ -109,6 +109,14 @@
                                     </div>
                                     <?php if(getError('skill')) { ?>
                                         <small class="text-danger font-weight-bold"><?php echo getError('skill') ?></small>
+                                    <?php } ?>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="upload" class="text-primary font-weight-bold">Upload Photo</label>
+                                    <input type="file" id="upload" name="upload" class="form-control p-1" value="<?php echo old('upload'); ?>">
+                                    <?php if(getError('upload')) { ?>
+                                        <small class="text-danger font-weight-bold"><?php echo getError('upload') ?></small>
                                     <?php } ?>
                                 </div>
 

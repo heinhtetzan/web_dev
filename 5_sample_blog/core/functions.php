@@ -374,3 +374,13 @@ function dashboardPosts($limit=9999999){
 
 
 // dashboard end
+
+// api start
+
+    function apiOutput($arr){
+
+        echo json_encode($arr);
+
+    }
+
+// api end

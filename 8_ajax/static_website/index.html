@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/all.css">
+</head>
+<body class="bg-dark">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="p-2 my-3 bg-white rounded">
+                    <a href="home.html" class="btn btn-outline-primary text-uppercase">home</a>
+                    <a href="about.html" class="btn btn-outline-primary text-uppercase">about</a>
+                    <a href="services.html" class="btn btn-outline-primary text-uppercase">services</a>
+                    <a href="contact.html" class="btn btn-outline-primary text-uppercase">contact</a>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="page">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+    <script>
+
+        let page = $(".page");
+
+        function showPage(url){
+
+            // page active
+            $(`a`).removeClass('active');
+            $(`a[href='${url}']`).addClass("active");
+
+            // page title
+            document.title = url.replace(".html","");
+
+            // url change
+            history.pushState(null,null,"/"+url.replace(".html",""));
+
+            $.get(url,function (data) {
+                page.html(data);
+            })
+        }
+
+        $("a").click(function (e) {
+            e.preventDefault();
+            let url = $(this).attr("href");
+            console.log(url);
+            showPage(url);
+        })
+
+        showPage("home.html");
+
+
+
+
+
+
+
+
+    </script>
+</body>
+</html>
